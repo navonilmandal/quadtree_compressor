@@ -1,0 +1,4 @@
+flask==2.2.5
+pillow==9.5.0
+numpy==1.26.4
+gunicorn==21.2.0

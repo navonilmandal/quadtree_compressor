@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quadtree Image Compressor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Quadtree Image Compressor</h1>
+    <p class="subtitle">Upload a photo, choose a target size and preserve edges — fast & simple.</p>
+  </header>
+
+  <main class="container">
+    <section class="left">
+      <div class="card">
+        <form id="uploadForm" method="post" enctype="multipart/form-data" action="{{ url_for('compress') }}">
+          <label class="label">Choose image (PNG/JPG)</label>
+          <input id="fileInput" type="file" name="image" accept="image/*" required>
+
+          <label class="label">Target compressed size (KB)</label>
+          <input id="targetKB" name="target_kb" type="number" min="1" value="{{ default_target_kb }}">
+
+          <div class="row">
+            <label class="label small">Max depth</label>
+            <input id="maxDepth" name="max_depth" type="number" min="0" max="12" value="{{ default_depth }}">
+            <label class="label small">Edge threshold</label>
+            <input id="edgeThreshold" name="edge_threshold" type="number" min="1" max="200" value="24">
+          </div>
+
+          <div class="actions">
+            <button id="compressBtn" type="submit">Compress</button>
+            <div id="spinner" class="spinner hidden"></div>
+          </div>
+
+          <div id="progress" class="progress hidden">
+            <div id="progressBar" class="progress-bar" style="width:0%"></div>
+          </div>
+
+          <div id="status" class="status"></div>
+        </form>
+      </div>
+
+      <div class="card hint">
+        <h3>Tips</h3>
+        <ul>
+          <li>Smaller KB → stronger compression (more loss). Use higher <b>Max depth</b> to preserve fine detail.</li>
+          <li>Lower <b>Edge threshold</b> preserves more edges (better for text).</li>
+          <li>If the result looks blocky, increase the target KB or increase max depth.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="right">
+      <div id="resultCard" class="card hidden">
+        <h3>Result</h3>
+        <div class="preview-row">
+          <div>
+            <h4>Original</h4>
+            <img id="origPreview" src="" alt="original preview">
+          </div>
+          <div>
+            <h4>Reconstructed</h4>
+            <img id="reconPreview" src="" alt="reconstructed preview">
+          </div>
+        </div>
+
+        <div class="metrics">
+          <p>PSNR: <b id="psnr">-</b> dB</p>
+          <p>Estimated compressed: <b id="estSize">-</b></p>
+          <p>Nodes: <b id="nodes">-</b></p>
+          <p>Used tolerance: <b id="usedTol">-</b></p>
+          <p id="msg" class="muted"></p>
+        </div>
+
+        <div class="download-row">
+          <a id="downloadRecon" class="btn" href="#">Download reconstructed PNG</a>
+          <a id="downloadJson" class="btn" href="#">Download compressed JSON</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <small>Built By Navonil</small>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

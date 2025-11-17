@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  quadtree:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./:/app           # bind the project folder so you can edit locally and see changes
+      - ./output:/app/output  # persist output files outside the container
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
